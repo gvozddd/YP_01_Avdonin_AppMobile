@@ -1,5 +1,6 @@
 package com.example.collegeschedule.ui.components
 
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.sp
 import com.example.collegeschedule.data.dto.GroupDto
 
 @Composable
@@ -44,7 +44,9 @@ fun GroupSelector(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 400.dp)
         ) {
             if (filteredGroups.isEmpty()) {
                 DropdownMenuItem(
@@ -52,17 +54,44 @@ fun GroupSelector(
                     onClick = { expanded = false }
                 )
             } else {
-                filteredGroups.forEach { group ->
-                    DropdownMenuItem(
-                        text = { Text(group.groupName) },
+                filteredGroups.forEachIndexed { index, group ->
+                    GroupDropdownItem(
+                        group = group,
                         onClick = {
                             onGroupSelected(group)
                             searchText = TextFieldValue(group.groupName)
                             expanded = false
                         }
                     )
+                    if (index < filteredGroups.size - 1) {
+                        Divider()
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun GroupDropdownItem(
+    group: GroupDto,
+    onClick: () -> Unit
+) {
+    DropdownMenuItem(
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text(
+                    text = group.groupName,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        },
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+    )
 }
