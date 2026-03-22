@@ -5,4 +5,5 @@ data class LessonPartDto(
     val teacherPosition: String,
     val classroom: String,
     val building: String,
+    val address: String
 )
